@@ -1,6 +1,6 @@
 import tkinter as tk
 import re
-from pprint import pprint
+from pprint import pformat
 import bs4 as bs
 import urllib.request as uq
 
@@ -32,6 +32,9 @@ class Application(tk.Frame):
         # make a text widget
         self.text = tk.Text(self)
         self.text.grid(columnspan=4)
+        # make another label
+        self.canv_lable = tk.Label(self, text="")
+        self.canv_lable.grid(columnspan=4)
 
     def rate(self):
         self.text.insert('1.0', "XXX")
@@ -60,17 +63,31 @@ class Application(tk.Frame):
         self.find_word_in_alphabet_soup(self.soup_bowl)
 
     def find_word_in_alphabet_soup(self, soup_bowl):
-        """prints all BeautifulSoup text items that contain the search term"""
-        # adding case insensitivity (remove "(?i)" if not desired)
+        """displays all BeautifulSoup text content that includes the search term"""
         word = self.entry.get()
-        search_term = re.compile(r"(?i){}".format(word))
-
+        search_term = re.compile(r"(?i){}".format(word)) # adding case insensitivity
+        annotated_results = []
+        flag = False
         for site, soup in self.soup_bowl.items():
             results = soup.body.findAll(text = search_term)
-            annotated_results = (site, results)
-            self.text.insert(tk.END, annotated_results)
+            if results:
+                flag = True
+            annotated_results.append((site, results))
+        # show the results pprinted in a text field (user can copy results)
+        self.text.delete('1.0', tk.END)
+        self.text.insert(tk.END, pformat(annotated_results))
+        if flag:
+            self.canv_lable["text"] = "Yay! ... and off you go."
+            self.canv_lable["fg"] = "black"
+        else:
+            self.canv_lable["text"] = "Nothing here... Try again!"
+            self.canv_lable["fg"] = "red"
+
+    # def fitler_print(self, annotated_results):
+    #     if annotated_results[1]:
+
 
 root = tk.Tk()
 app = Application(master=root)
-app.master.title('Sample application')
+app.master.title('Engine Search')
 app.mainloop()
