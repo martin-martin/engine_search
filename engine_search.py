@@ -4,6 +4,7 @@ from pprint import pformat
 import bs4 as bs
 import urllib.request as uq
 
+
 class Application(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
@@ -82,9 +83,6 @@ class Application(tk.Frame):
         else:
             self.canv_lable["text"] = "Nothing here... Try again!"
             self.canv_lable["fg"] = "red"
-
-    # def fitler_print(self, annotated_results):
-    #     if annotated_results[1]:
 
 
 root = tk.Tk()
